@@ -1,0 +1,64 @@
+stages:
+  - build
+  - test
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+backend-test:
+  stage: test
+  image: maven:3.9-eclipse-temurin-21
+  services:
+    - docker:dind
+  cache:
+    paths:
+      - Ecommerce-Backend/.m2/repository
+  script:
+    - cd Ecommerce-Backend
+    - mvn -B -q test -Dtest='!*IT'
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "merge_request_event"'
+
+backend-build:
+  stage: build
+  image: maven:3.9-eclipse-temurin-21
+  cache:
+    paths:
+      - Ecommerce-Backend/.m2/repository
+  script:
+    - cd Ecommerce-Backend
+    - mvn -B -q package -DskipTests
+  artifacts:
+    paths:
+      - Ecommerce-Backend/target/*.jar
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "merge_request_event"'
+
+frontend-test:
+  stage: test
+  image: node:20-alpine
+  cache:
+    paths:
+      - Ecommerce-Frontend/node_modules
+  script:
+    - cd Ecommerce-Frontend
+    - npm ci
+    - npm run lint --if-present
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "merge_request_event"'
+
+frontend-build:
+  stage: build
+  image: node:20-alpine
+  cache:
+    paths:
+      - Ecommerce-Frontend/node_modules
+  script:
+    - cd Ecommerce-Frontend
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - Ecommerce-Frontend/dist
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "merge_request_event"'
