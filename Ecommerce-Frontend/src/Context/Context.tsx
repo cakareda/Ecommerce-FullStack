@@ -60,7 +60,7 @@ export const AppProvider = ({ children }) => {
       const response = await axios.get("/products");
       setData(response.data);
     } catch (error) {
-      setIsError(error.message);
+      setIsError((error as Error).message);
     }
   };
 
