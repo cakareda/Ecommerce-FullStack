@@ -43,7 +43,7 @@ function AppContent() {
           <Route
               path="/"
               element={
-                <Home addToCart={addToCart} selectedCategory={selectedCategory} />
+                <Home selectedCategory={selectedCategory} />
               }
           />
           <Route path="/login" element={<Login />} />

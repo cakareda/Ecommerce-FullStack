@@ -5,7 +5,7 @@ import axios from "../axios";
 const UpdateProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState({});
+  const [product, setProduct] = useState<Record<string, any>>({});
   const [image, setImage] = useState(null);
   const [updateProduct, setUpdateProduct] = useState({
     id: null,
