@@ -18,8 +18,8 @@ const Login = () => {
         setError("");
         try {
             const response = await axios.post("/auth/login", credentials);
-            const { token, username, role } = response.data;
-            login({ username, role }, token);
+            const { token, id, username, role } = response.data;
+            login({ id, username, role }, token);
             alert("Login successful!");
             navigate("/");
         } catch (err) {

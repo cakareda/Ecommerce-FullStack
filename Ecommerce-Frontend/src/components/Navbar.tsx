@@ -134,6 +134,16 @@ const Navbar = ({ onSelectCategory }) => {
                   <span className="d-none d-sm-inline">Cart</span>
                 </Link>
 
+                <Link to="/categories" className="nav-link d-flex align-items-center gap-1">
+                  <i className="bi bi-grid" style={{ fontSize: "1.2rem" }}></i>
+                  <span className="d-none d-sm-inline">Categories</span>
+                </Link>
+
+                <Link to="/orders" className="nav-link d-flex align-items-center gap-1">
+                  <i className="bi bi-receipt" style={{ fontSize: "1.2rem" }}></i>
+                  <span className="d-none d-sm-inline">Orders</span>
+                </Link>
+
                 {/* Search Bar */}
                 <div className="position-relative" style={{ width: "200px" }}>
                   <input

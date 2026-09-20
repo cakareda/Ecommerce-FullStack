@@ -39,8 +39,10 @@ public class AuthController {
                 (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         
         String role = userDetails.getAuthorities().iterator().next().getAuthority();
+        User user = userRepo.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found: " + userDetails.getUsername()));
 
-        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), role));
+        return ResponseEntity.ok(new JwtResponse(jwt, user.getId(), userDetails.getUsername(), role));
     }
 
     @PostMapping("/register")
