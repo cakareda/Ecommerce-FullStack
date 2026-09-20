@@ -8,6 +8,9 @@ import Product from "./components/Product";
 import UpdateProduct from "./components/UpdateProduct";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import CartPage from "./pages/CartPage";
+import OrdersPage from "./pages/OrdersPage";
+import CategoriesPage from "./pages/CategoriesPage";
 import AppContext, { AppProvider } from "./Context/Context";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -51,6 +54,9 @@ function AppContent() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/product" element={<Product />} />
           <Route path="/product/:id" element={<Product />} />
+          <Route path="/checkout" element={<CartPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/categories" element={<CategoriesPage />} />
 
           {/* Korumalı Rotalar (Sadece Admin veya Yetkili Kullanıcılar) */}
           <Route
