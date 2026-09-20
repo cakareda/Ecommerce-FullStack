@@ -1,8 +1,10 @@
 package com.cart.ecom_proj.service;
 
+import com.cart.ecom_proj.audit.service.AuditLogService;
 import com.cart.ecom_proj.model.Product;
 import com.cart.ecom_proj.repo.ProductRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +16,7 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepo repo;
+    private final AuditLogService auditLogService;
 
     public List<Product> getAllProducts() {
         return repo.findAll();
@@ -60,6 +63,11 @@ public class ProductService {
     }
 
     public List<Product> searchProducts(String keyword) {
-        return repo.searchProducts(keyword);
+        List<Product> results = repo.searchProducts(keyword);
+        String username = SecurityContextHolder.getContext().getAuthentication() != null
+                ? SecurityContextHolder.getContext().getAuthentication().getName()
+                : "anonymous";
+        auditLogService.record(username, "PRODUCT_SEARCH", "keyword='" + keyword + "', results=" + results.size());
+        return results;
     }
 }

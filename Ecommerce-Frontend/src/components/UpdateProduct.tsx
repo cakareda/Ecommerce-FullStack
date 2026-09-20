@@ -1,59 +1,93 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "../axios";
-import { useNavigate } from "react-router-dom";
 
-const AddProduct = () => {
+const UpdateProduct = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState({
+  const [product, setProduct] = useState<Record<string, any>>({});
+  const [image, setImage] = useState(null);
+  const [updateProduct, setUpdateProduct] = useState({
+    id: null,
     name: "",
-    brand: "",
     description: "",
+    brand: "",
     price: "",
     category: "",
-    stockQuantity: "",
     releaseDate: "",
     productAvailable: false,
+    stockQuantity: "",
   });
-  const [image, setImage] = useState(null);
 
-  const handleInputChange = (e) => {
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`/product/${id}`);
+        setProduct(response.data);
+        setUpdateProduct(response.data);
+
+        const responseImage = await axios.get(`/product/${id}/image`, {
+          responseType: "blob",
+        });
+        const imageFile = await converUrlToFile(
+            responseImage.data,
+            response.data.imageName || "image.jpg"
+        );
+        setImage(imageFile);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  const converUrlToFile = async (blobData, fileName) => {
+    return new File([blobData], fileName, { type: blobData.type });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const updatedProduct = new FormData();
+    updatedProduct.append("imageFile", image);
+    updatedProduct.append(
+        "product",
+        new Blob([JSON.stringify(updateProduct)], { type: "application/json" })
+    );
+
+    axios
+        .put(`/product/${id}`, updatedProduct, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => {
+          alert("Product updated successfully!");
+          navigate(`/product/${id}`);
+        })
+        .catch((error) => {
+          console.error("Error updating product:", error);
+          alert("Failed to update product. Please try again.");
+        });
+  };
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setProduct({ ...product, [name]: value });
+    setUpdateProduct({
+      ...updateProduct,
+      [name]: value,
+    });
   };
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
 
-  const submitHandler = (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append("imageFile", image);
-    formData.append(
-        "product",
-        new Blob([JSON.stringify(product)], { type: "application/json" })
-    );
-
-    axios
-        .post("/product", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          alert("Product added successfully");
-          navigate("/");
-        })
-        .catch((error) => {
-          console.error("Error adding product:", error);
-          alert("Error adding product");
-        });
-  };
-
   return (
-      <div className="container">
-        <div className="center-container">
-          <form className="row g-3 pt-5" onSubmit={submitHandler}>
+      <div className="update-product-container">
+        <div className="center-container" style={{ marginTop: "7rem" }}>
+          <h1>Update Product</h1>
+          <form className="row g-3 pt-1" onSubmit={handleSubmit}>
             <div className="col-md-6">
               <label className="form-label">
                 <h6>Name</h6>
@@ -61,11 +95,10 @@ const AddProduct = () => {
               <input
                   type="text"
                   className="form-control"
-                  placeholder="Product Name"
-                  onChange={handleInputChange}
-                  value={product.name}
+                  placeholder={product.name}
+                  value={updateProduct.name}
+                  onChange={handleChange}
                   name="name"
-                  required
               />
             </div>
             <div className="col-md-6">
@@ -76,11 +109,10 @@ const AddProduct = () => {
                   type="text"
                   name="brand"
                   className="form-control"
-                  placeholder="Enter your Brand"
-                  value={product.brand}
-                  onChange={handleInputChange}
+                  placeholder={product.brand}
+                  value={updateProduct.brand}
+                  onChange={handleChange}
                   id="brand"
-                  required
               />
             </div>
             <div className="col-12">
@@ -90,12 +122,11 @@ const AddProduct = () => {
               <input
                   type="text"
                   className="form-control"
-                  placeholder="Add product description"
-                  value={product.description}
+                  placeholder={product.description}
                   name="description"
-                  onChange={handleInputChange}
+                  onChange={handleChange}
+                  value={updateProduct.description}
                   id="description"
-                  required
               />
             </div>
             <div className="col-5">
@@ -105,26 +136,23 @@ const AddProduct = () => {
               <input
                   type="number"
                   className="form-control"
-                  placeholder="Eg: $1000"
-                  onChange={handleInputChange}
-                  value={product.price}
+                  onChange={handleChange}
+                  value={updateProduct.price}
+                  placeholder={product.price}
                   name="price"
                   id="price"
-                  required
               />
             </div>
-
             <div className="col-md-6">
               <label className="form-label">
                 <h6>Category</h6>
               </label>
               <select
                   className="form-select"
-                  value={product.category}
-                  onChange={handleInputChange}
+                  value={updateProduct.category}
+                  onChange={handleChange}
                   name="category"
                   id="category"
-                  required
               >
                 <option value="">Select category</option>
                 <option value="Laptop">Laptop</option>
@@ -143,37 +171,36 @@ const AddProduct = () => {
               <input
                   type="number"
                   className="form-control"
-                  placeholder="Stock Remaining"
-                  onChange={handleInputChange}
-                  value={product.stockQuantity}
+                  onChange={handleChange}
+                  placeholder={product.stockQuantity}
+                  value={updateProduct.stockQuantity}
                   name="stockQuantity"
                   id="stockQuantity"
-                  required
               />
             </div>
-            <div className="col-md-4">
-              <label className="form-label">
-                <h6>Release Date</h6>
-              </label>
-              <input
-                  type="date"
-                  className="form-control"
-                  value={product.releaseDate}
-                  name="releaseDate"
-                  onChange={handleInputChange}
-                  id="releaseDate"
-                  required
-              />
-            </div>
-            <div className="col-md-4">
+            <div className="col-md-8">
               <label className="form-label">
                 <h6>Image</h6>
               </label>
+              {image && (
+                  <img
+                      src={URL.createObjectURL(image)}
+                      alt={product.imageName}
+                      style={{
+                        width: "100%",
+                        height: "180px",
+                        objectFit: "cover",
+                        padding: "5px",
+                        margin: "0",
+                      }}
+                  />
+              )}
               <input
                   className="form-control"
                   type="file"
                   onChange={handleImageChange}
-                  required
+                  name="imageUrl"
+                  id="imageUrl"
               />
             </div>
             <div className="col-12">
@@ -183,14 +210,18 @@ const AddProduct = () => {
                     type="checkbox"
                     name="productAvailable"
                     id="gridCheck"
-                    checked={product.productAvailable}
+                    checked={updateProduct.productAvailable}
                     onChange={(e) =>
-                        setProduct({ ...product, productAvailable: e.target.checked })
+                        setUpdateProduct({
+                          ...updateProduct,
+                          productAvailable: e.target.checked,
+                        })
                     }
                 />
                 <label className="form-check-label">Product Available</label>
               </div>
             </div>
+
             <div className="col-12">
               <button type="submit" className="btn btn-primary">
                 Submit
@@ -202,4 +233,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default UpdateProduct;

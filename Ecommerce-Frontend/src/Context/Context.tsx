@@ -6,10 +6,10 @@ const AppContext = createContext({
   isError: "",
   cart: [],
   user: null,
-  login: (userData, token) => {},
+  login: (_userData, _token) => {},
   logout: () => {},
-  addToCart: (product) => {},
-  removeFromCart: (productId) => {},
+  addToCart: (_product) => {},
+  removeFromCart: (_productId) => {},
   refreshData: () => {},
   clearCart: () => {},
 });
@@ -60,7 +60,7 @@ export const AppProvider = ({ children }) => {
       const response = await axios.get("/products");
       setData(response.data);
     } catch (error) {
-      setIsError(error.message);
+      setIsError((error as Error).message);
     }
   };
 
