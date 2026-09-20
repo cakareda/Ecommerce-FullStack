@@ -79,7 +79,7 @@ const Login = () => {
                         </div>
                     </form>
                     <p className="mt-4 text-center" style={{ fontSize: "0.95rem" }}>
-                        Don't have an account? <Link to="/register" style={{ fontWeight: "600", textDecoration: "underline" }}>Register</Link>
+                        Don&apos;t have an account? <Link to="/register" style={{ fontWeight: "600", textDecoration: "underline" }}>Register</Link>
                     </p>
                 </div>
             </div>

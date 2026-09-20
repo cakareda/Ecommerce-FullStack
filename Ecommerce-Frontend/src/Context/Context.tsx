@@ -6,10 +6,10 @@ const AppContext = createContext({
   isError: "",
   cart: [],
   user: null,
-  login: (userData, token) => {},
+  login: (_userData, _token) => {},
   logout: () => {},
-  addToCart: (product) => {},
-  removeFromCart: (productId) => {},
+  addToCart: (_product) => {},
+  removeFromCart: (_productId) => {},
   refreshData: () => {},
   clearCart: () => {},
 });

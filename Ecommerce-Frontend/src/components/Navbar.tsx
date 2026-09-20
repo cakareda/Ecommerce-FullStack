@@ -12,7 +12,6 @@ const Navbar = ({ onSelectCategory }) => {
     return storedTheme ? storedTheme : "light-theme";
   };
 
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [theme, setTheme] = useState(getInitialTheme());
   const [input, setInput] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -38,7 +37,6 @@ const Navbar = ({ onSelectCategory }) => {
   };
 
   const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
     onSelectCategory(category);
   };
 

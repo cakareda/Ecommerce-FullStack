@@ -40,7 +40,7 @@ const AddProduct = () => {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((response) => {
+        .then(() => {
           alert("Product added successfully");
           navigate("/");
         })

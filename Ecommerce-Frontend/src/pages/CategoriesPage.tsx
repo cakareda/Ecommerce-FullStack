@@ -56,7 +56,7 @@ export default function CategoriesPage() {
 
       {selected && (
         <div>
-          <h2 className="mb-4 text-lg font-semibold">Products in "{selected}"</h2>
+          <h2 className="mb-4 text-lg font-semibold">Products in &quot;{selected}&quot;</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
               <Card key={product.id}>

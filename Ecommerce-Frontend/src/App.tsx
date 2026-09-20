@@ -33,7 +33,6 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
 
 function AppContent() {
   const [selectedCategory, setSelectedCategory] = useState("");
-  const { addToCart } = useContext(AppContext);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
